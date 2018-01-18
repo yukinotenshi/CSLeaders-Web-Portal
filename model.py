@@ -52,6 +52,14 @@ class Invitation(BaseModel):
         db_table = "Invitation"
 
 
+class JoinRequest(BaseModel):
+    user = pw.ForeignKeyField(User, related_name="requested_groups")
+    group = pw.ForeignKeyField(Group, related_name="requesting_users")
+
+    class Meta:
+        db_table = "Invitation"
+
+
 class Broadcast(BaseModel):
     fromUser = pw.ForeignKeyField(User, related_name="sent_broadcasts")
     toGroup = pw.ForeignKeyField(Group, related_name="received_broadcasts")
@@ -71,6 +79,7 @@ class MailQueue(BaseModel):
     class Meta:
         db_table = "mailqueue"
 
+
 class Schedule(BaseModel):
     byUser = pw.ForeignKeyField(User, related_name="set_schedules")
     forGroup = pw.ForeignKeyField(Group, related_name="received_schedules")
@@ -78,6 +87,7 @@ class Schedule(BaseModel):
 
     class Meta:
         db_table = "schedule"
+
 
 def createGroup(name: str, admin: User) -> Group:
     g = Group(name=name, admin=admin)
@@ -119,6 +129,10 @@ def addUserToGroup(user: User, group: Group) -> InGroup:
     q = InGroup(user=user, group=group)
     q.save()
     return q
+
+
+def removeUserFromGroup(user: User, group: Group):
+    InGroup.delete().where((InGroup.user == user) & (InGroup.group == group))
 
 
 def deleteGroup(group: Group):
