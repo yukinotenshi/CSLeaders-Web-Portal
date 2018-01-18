@@ -124,8 +124,16 @@ def addUserToGroup(user: User, group: Group) -> InGroup:
                 .get((Invitation.user == user) & (Invitation.group == group))
         q.delete_instance()
     except Exception as e:
-        print(e)
         pass
+
+    # hapus requests jika ada
+    try:
+        q = JoinRequest \
+                .get((JoinRequest.user == user) & (JoinRequest.group == group))
+        q.delete_instance()
+    except Exception as e:
+        pass
+
     q = InGroup(user=user, group=group)
     q.save()
     return q
@@ -138,6 +146,14 @@ def removeUserFromGroup(user: User, group: Group):
 def deleteGroup(group: Group):
     InGroup.delete().where(InGroup.group == group)
     group.delete_instance()
+
+
+def requestUserToGroup(user: User, group: Group) -> JoinRequest:
+    assert not userIsInGroup(user, group)
+    assert not userIsInvitedToGroup(user, group)
+    q = JoinRequest(user=user, group=group)
+    q.save()
+    return q
 
 
 def listUserGroups(user: User):
