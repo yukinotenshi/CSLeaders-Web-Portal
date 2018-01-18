@@ -1,8 +1,9 @@
-from flask import Blueprint, request, Response, render_template, url_for, session, redirect
+from flask import Blueprint, request, render_template, session
 import model
 import render
 
 mail = Blueprint('mail', 'mail', url_prefix='/mail')
+
 
 def loggedIn(bool):
     def decorator(func):
@@ -23,10 +24,12 @@ def loggedIn(bool):
         return wrap
     return decorator
 
+
 @mail.route("/")
 @loggedIn(True)
 def view():
     return render.mail()
+
 
 @mail.route("/send", methods=["POST"])
 @loggedIn(True)
@@ -40,7 +43,7 @@ def sendMail():
         group = model.Group.get(
             model.Group.id == data['group']
         )
-        model.broadcastMailToGroup(user,group,data['title'], data['body'])
+        model.broadcastMailToGroup(user, group, data['title'], data['body'])
 
         return render.mail(success="Mail sent.")
 
