@@ -112,7 +112,7 @@ def add_user_to_group(user: User, group: Group) -> InGroup:
     try:
         q = Invitation \
                 .get((Invitation.user == user) & (Invitation.group == group))
-        q.delete()
+        q.delete_instance()
     except Exception as e:
         print(e)
         pass
