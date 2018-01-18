@@ -1,6 +1,8 @@
 # coding=utf-8
 
 from flask import Flask, request, render_template, session, redirect, url_for
+from flask_apscheduler import APScheduler
+import scheduler
 import hashlib
 import model
 import render
@@ -11,6 +13,12 @@ app = Flask(__name__)
 app.secret_key = "SOMETHING SHOULD BE SECRET"
 app.register_blueprint(group)
 app.register_blueprint(mail)
+
+app.config.from_object(scheduler.Config())
+schedule = APScheduler()
+schedule.init_app(app)
+schedule.start()
+
 
 def loggedIn(bool):
     def decorator(func):
