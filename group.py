@@ -125,7 +125,7 @@ def invite():
 
 @group.route("/request", methods=["POST"])
 @loggedIn(True)
-def request():
+def requestJoin():
     try:
         user = model.User.get(
             model.User.email == session['user']
