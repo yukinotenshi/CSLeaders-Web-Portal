@@ -9,6 +9,10 @@ class BaseModel(pw.Model):
     updatedAt = pw.DateTimeField(default=datetime.now)
     createdAt = pw.DateTimeField(default=datetime.now)
 
+    def save(self, *args, **kwargs):
+        self.updatedAt = datetime.now()
+        return super(BaseModel, self).save(*args, **kwargs)
+
     class Meta:
         database = db
 
@@ -48,20 +52,32 @@ class Invitation(BaseModel):
         db_table = "Invitation"
 
 
-class MailQueue(BaseModel):
-    fromUser = pw.ForeignKeyField(User, related_name="sent_emails")
-    toUser = pw.ForeignKeyField(User, related_name="received_emails")
+class Broadcast(BaseModel):
+    fromUser = pw.ForeignKeyField(User, related_name="sent_broadcasts")
+    toGroup = pw.ForeignKeyField(Group, related_name="received_broadcasts")
     body = pw.TextField()
     title = pw.CharField()
+    isQueued = pw.BooleanField()
+
+    class Meta:
+        db_table = "broadcast"
+
+
+class MailQueue(BaseModel):
+    detail = pw.ForeignKeyField(Broadcast, related_name="sent_emails")
+    toUser = pw.ForeignKeyField(User, related_name="received_emails")
     sentAt = pw.DateTimeField(default=datetime.now)
 
     class Meta:
         db_table = "mailqueue"
 
-    @staticmethod
-    def broadcast_group(sender: User, group: Group, title, body):
-        pass
+class Schedule(BaseModel):
+    byUser = pw.ForeignKeyField(User, related_name="set_schedules")
+    forGroup = pw.ForeignKeyField(Group, related_name="received_schedules")
+    date = pw.DateTimeField(default=datetime.now)
 
+    class Meta:
+        db_table = "schedule"
 
 def create_group(name: str, admin: User) -> Group:
     g = Group(name=name, admin=admin)
@@ -116,6 +132,9 @@ def list_user_groups(user: User):
 
 def list_group_users(group: Group):
     return [x.user for x in group.users]
+
+def list_user_invitations_group(user: User):
+    return [x.group for x in user.invited_groups]
 
 
 if __name__ == '__main__':

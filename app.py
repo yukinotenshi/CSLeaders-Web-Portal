@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from flask import Flask, request, render_template, session
+from flask import Flask, request, render_template, session, redirect, url_for
 import hashlib
 import model
 
@@ -15,7 +15,6 @@ def loggedIn(bool):
                 stat = session.get('loggedIn') is None
             else:
                 stat = session.get('loggedIn') is not None
-                print(stat)
             if (stat):
                 return func(*args, **kwargs)
             else:
@@ -52,18 +51,15 @@ def login():
             m = hashlib.md5()
             m.update(request.form['password'].encode('utf-8'))
             password = m.hexdigest()
-            print(password)
             user = model.User.get(
                     (model.User.email == data['email']) &
                     (model.User.password == password)
                     )
             session['loggedIn'] = True
-            session['user'] = user.fullName
+            session['user'] = user.email
 
-            return render_template("dashboard.html",
-                                   success="Successfully logged in.")
+            return redirect(url_for("dashboard"))
         except Exception as e:
-            print(e)
             return render_template("login.html", msg="Wrong email/password.")
 
 
@@ -78,7 +74,14 @@ def logout():
 @app.route("/dashboard")
 @loggedIn(True)
 def dashboard():
-    return render_template("dashboard.html")
+    user = model.User.get(
+        model.User.email == session['user']
+    )
+    mails = [x for x in user.sent_broadcasts] + [x.detail for x in user.received_emails]
+    groups = model.list_user_invitations_group(user)
+    return render_template("dashboard.html",
+                           user=user, mails=mails, groups=groups,
+                           page="Dashboard")
 
 
 if __name__ == "__main__":

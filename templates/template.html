@@ -34,7 +34,7 @@
 <body>
 
 <div class="wrapper">
-    <div class="sidebar" data-color="purple" data-image="/static/assets/img/sidebar-5.jpg">
+    <div class="sidebar" data-color="purple" data-image="/static/assets/img/sidebar-4.jpg">
 
     <!--
 
@@ -45,13 +45,13 @@
 
     	<div class="sidebar-wrapper">
             <div class="logo">
-                <a href="http://www.creative-tim.com" class="simple-text">
+                <a href="{{ url_for('dashboard') }}" class="simple-text">
                     CSLeaders
                 </a>
             </div>
 
             <ul class="nav">
-                <li class="active">
+                <li class="{% if page == 'Dashboard' %} active {% endif %}">
                     <a href="{{ url_for('dashboard') }}">
                         <i class="pe-7s-graph"></i>
                         <p>Dashboard</p>
@@ -78,7 +78,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Dashboard</a>
+                    <a class="navbar-brand" href="#">{{ page }}</a>
                 </div>
                 <div class="collapse navbar-collapse">
 
@@ -89,9 +89,7 @@
 
         <div class="content">
             <div class="container-fluid">
-                <div class="row">
-                    {% block body %} {% endblock %}
-                </div>
+                {% block body %} {% endblock %}
             </div>
         </div>
 
@@ -100,16 +98,11 @@
             <div class="container-fluid">
                 <nav class="pull-left">
                     <ul>
-                        <li>
-                            <a href="#">
-                                Home
-                            </a>
-                        </li>
 
                     </ul>
                 </nav>
                 <p class="copyright pull-right">
-                    &copy; <script>document.write(new Date().getFullYear())</script> <a href="http://www.creative-tim.com">Creative Tim</a>, made with love for a better web
+                    &copy; <script>document.write(new Date().getFullYear())</script> CSLeaders, Marketing & Communication Team
                 </p>
             </div>
         </footer>
@@ -130,6 +123,22 @@
 
     <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
 	<script src="/static/assets/js/light-bootstrap-dashboard.js?v=1.4.0"></script>
+    {% if success %}
+    <script type="text/javascript">
+    	$(document).ready(function(){
+
+        	$.notify({
+            	icon: 'pe-7s-gift',
+            	message: "{{ success }}"
+
+            },{
+                type: 'info',
+                timer: 3000
+            });
+
+    	});
+	</script>
+    {% endif %}
 
 
 </html>
