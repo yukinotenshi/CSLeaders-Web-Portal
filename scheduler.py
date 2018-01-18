@@ -9,7 +9,7 @@ class Config(object):
                 'id': 'sendMail',
                 'func': 'scheduler:sendMail',
                 'trigger': 'interval',
-                'seconds': 10
+                'seconds': 30
                 }
             ]
 
