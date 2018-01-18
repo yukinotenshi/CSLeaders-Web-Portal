@@ -1,0 +1,94 @@
+{% extends "template.html" %}
+{% block body %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="header">
+                <h4 class="title">Your Groups</h4>
+            </div>
+            {% if groups %}
+            <div class="content table-responsive table-full-width">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <th>Group</th>
+                    </thead>
+                    <tbody>
+                    {% for group in groups %}
+                    <tr>
+                        <td>{{group.name}}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="content">
+                <p class="category">You don't have any group</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Create Group</h4>
+                    </div>
+                    <div class="content">
+                        <form action="{{url_for('group.create')}}" method="POST">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Group Name</label>
+                                        <input type="text" class="form-control" placeholder="Group Name" name="group">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-info btn-fill">Create</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Invite User</h4>
+                    </div>
+                    <div class="content">
+                        <form action="{{url_for('group.invite')}}" method="POST" id="invite">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <select name="user" form="invite" class="form-control">
+                                            {% for user in users %}
+                                                <option value={{user.id}}>{{user.fullName}} - {{user.nickName}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Group</label>
+                                        <select name="group" form="invite" class="form-control">
+                                            {% for group in ownedGroups %}
+                                                <option value={{group.id}}>{{group.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-info btn-fill">Invite</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

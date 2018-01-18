@@ -3,10 +3,12 @@
 from flask import Flask, request, render_template, session, redirect, url_for
 import hashlib
 import model
+import render
+from group import group
 
 app = Flask(__name__)
 app.secret_key = "SOMETHING SHOULD BE SECRET"
-
+app.register_blueprint(group)
 
 def loggedIn(bool):
     def decorator(func):
@@ -74,14 +76,7 @@ def logout():
 @app.route("/dashboard")
 @loggedIn(True)
 def dashboard():
-    user = model.User.get(
-        model.User.email == session['user']
-    )
-    mails = [x for x in user.sent_broadcasts] + [x.detail for x in user.received_emails]
-    groups = model.list_user_invitations_group(user)
-    return render_template("dashboard.html",
-                           user=user, mails=mails, groups=groups,
-                           page="Dashboard")
+    return render.dashboard()
 
 
 if __name__ == "__main__":

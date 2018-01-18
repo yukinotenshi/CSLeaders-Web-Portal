@@ -130,8 +130,13 @@ def list_user_groups(user: User):
     return [x.group for x in user.groups]
 
 
+def list_admin_groups(admin: User):
+    return [x for x in admin.admin_of]
+
+
 def list_group_users(group: Group):
     return [x.user for x in group.users]
+
 
 def list_user_invitations_group(user: User):
     return [x.group for x in user.invited_groups]
