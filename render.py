@@ -24,3 +24,16 @@ def group(**kwargs):
                            page="Group",
                            ownedGroups=ownedGroups, **kwargs,
                            admin=user)
+
+def mail(**kwargs):
+    user = model.User.get(
+        model.User.email == session['user']
+    )
+    groups = model.Group.select()
+    mails = [x for x in user.sent_broadcasts] + [x.detail for x in user.received_emails]
+
+    return render_template("mail.html",
+                           page="Mail",
+                           groups=groups,
+                           mails=mails,
+                           user=user, **kwargs)

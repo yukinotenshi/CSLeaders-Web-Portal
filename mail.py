@@ -26,4 +26,24 @@ def loggedIn(bool):
 @mail.route("/")
 @loggedIn(True)
 def view():
-    pass
+    return render.mail()
+
+@mail.route("/send", methods=["POST"])
+@loggedIn(True)
+def sendMail():
+    try:
+        print("AAA")
+        data = request.form
+        user = model.User.get(
+            model.User.email == session['user']
+        )
+        group = model.Group.get(
+            model.Group.id == data['group']
+        )
+        model.broadcastMailToGroup(user,group,data['title'], data['body'])
+
+        return render.mail(success="Mail sent.")
+
+    except Exception as e:
+        print(e)
+        return render.mail(error="Fail to send email.")
