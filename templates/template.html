@@ -57,6 +57,12 @@
                         <p>Dashboard</p>
                     </a>
                 </li>
+                <li class="{% if page == 'Group' %} active {% endif %}">
+                    <a href="{{ url_for('group.view') }}">
+                        <i class="pe-7s-users"></i>
+                        <p>Group</p>
+                    </a>
+                </li>
                 <li class="active-pro">
                     <a href="{{ url_for('logout') }}">
                         <i class="pe-7s-door-lock"></i>
@@ -123,22 +129,30 @@
 
     <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
 	<script src="/static/assets/js/light-bootstrap-dashboard.js?v=1.4.0"></script>
-    {% if success %}
     <script type="text/javascript">
     	$(document).ready(function(){
-
+            {% if success %}
         	$.notify({
-            	icon: 'pe-7s-gift',
+            	icon: 'pe-7s-check',
             	message: "{{ success }}"
 
             },{
-                type: 'info',
+                type: 'success',
                 timer: 3000
             });
+            {% elif error %}
+            $.notify({
+            	icon: 'pe-7s-close-circle',
+            	message: "{{ error }}"
+
+            },{
+                type: 'danger',
+                timer: 3000
+            });
+            {% endif %}
 
     	});
 	</script>
-    {% endif %}
 
 
 </html>
