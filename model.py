@@ -65,7 +65,6 @@ class Broadcast(BaseModel):
     toGroup = pw.ForeignKeyField(Group, related_name="received_broadcasts")
     body = pw.TextField()
     title = pw.CharField()
-    isQueued = pw.BooleanField()
 
     class Meta:
         db_table = "broadcast"
@@ -140,7 +139,8 @@ def addUserToGroup(user: User, group: Group) -> InGroup:
 
 
 def removeUserFromGroup(user: User, group: Group):
-    query = InGroup.delete().where((InGroup.user == user) & (InGroup.group == group))
+    query = InGroup.delete() \
+                   .where((InGroup.user == user) & (InGroup.group == group))
     query.execute()
 
 
@@ -172,6 +172,14 @@ def listGroupUsers(group: Group):
 
 def listUserInvitationsGroup(user: User):
     return [x.group for x in user.invited_groups]
+
+
+def broadcastMailToGroup(sender: User, group: Group, title, body):
+    b = Broadcast(fromUser=sender, toGroup=group, body=body, title=title)
+    b.save()
+    for user in listGroupUsers(group):
+        m = MailQueue(detail=b, toUser=user)
+        m.save()
 
 
 if __name__ == '__main__':
