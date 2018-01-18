@@ -93,11 +93,11 @@ def create():
     return render.group(success="Group has been created.")
 
 
-@group.route("/delete/<gid>")
+@group.route("/delete", methods=["POST"])
 @loggedIn(True)
-def delete(gid):
+def delete():
     try:
-        group = model.Group.get(model.Group.id == gid)
+        group = model.Group.get(model.Group.id == request.form['id'])
         model.deleteGroup(group)
         return render.group(success="Group has been deleted")
     except:
@@ -122,3 +122,20 @@ def invite():
 
     except:
         return render.group(error="Error inviting %s" % user.nickName)
+
+@group.route("/request", methods=["POST"])
+@loggedIn(True)
+def requestJoin():
+    try:
+        user = model.User.get(
+            model.User.email == session['user']
+        )
+        group = model.Group.get(
+            model.Group.id == request.form['group']
+        )
+        model.requestUserToGroup(user, group)
+
+        return render.group(success="You have requested to join")
+    except:
+        return  render.group(error="Fail requesting to join")
+
