@@ -5,10 +5,12 @@ import hashlib
 import model
 import render
 from group import group
+from mail import mail
 
 app = Flask(__name__)
 app.secret_key = "SOMETHING SHOULD BE SECRET"
 app.register_blueprint(group)
+app.register_blueprint(mail)
 
 def loggedIn(bool):
     def decorator(func):
