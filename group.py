@@ -93,11 +93,11 @@ def create():
     return render.group(success="Group has been created.")
 
 
-@group.route("/delete/<gid>")
+@group.route("/delete", methods=["POST"])
 @loggedIn(True)
-def delete(gid):
+def delete():
     try:
-        group = model.Group.get(model.Group.id == gid)
+        group = model.Group.get(model.Group.id == request.form['id'])
         model.deleteGroup(group)
         return render.group(success="Group has been deleted")
     except:

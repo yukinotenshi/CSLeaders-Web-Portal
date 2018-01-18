@@ -19,7 +19,10 @@
                         <td>{{group.name}}</td>
                         <td>
                             {% if group.admin == admin %}
-                                <a href="{{url_for('group.delete', gid=group.id)}}">Delete</a>
+                            <form action="{{url_for('group.delete')}}" method="POST">
+                                <input name="id" value="{{group.id}}" hidden>
+                                <button type="submit" class="btn btn-danger btn-fill">Delete</button>
+                            </form>
                             {% endif %}
                         </td>
                     </tr>
