@@ -17,12 +17,14 @@ class Config(object):
 
 
 def sendMail():
-    print("UYEEEE")
-
     queue = model.MailQueue \
                  .select(model.MailQueue, model.Broadcast, model.User) \
-                 .join(model.Broadcast, model.User) \
+                 .join(model.Broadcast) \
+                 .join(model.User) \
                  .order_by(model.MailQueue.sentAt.asc())
+                 #.join(model.Broadcast, model.User) \
+
+    print(queue.count())
 
     sg = sendgrid.SendGridAPIClient(apikey="SENDGRID_API_KEY")
 
@@ -33,5 +35,5 @@ def sendMail():
         content = Content("text/plain", item.detail.title)
         mail = Mail(from_email, subject, to_email, content)
         resp = sg.client.mail.send.post(request_body=mail.get())
-        if resp.status_code != 202:
-            item.delete_instance()
+        assert resp.status_code = 202
+        item.delete_instance()
