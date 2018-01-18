@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4806220a-bae9-4d66-a211-a64bbc052b38" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/group.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/render.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/templates/group.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.py" afterPath="$PROJECT_DIR$/app.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model.py" afterPath="$PROJECT_DIR$/model.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/dashboard.html" afterPath="$PROJECT_DIR$/templates/dashboard.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/template.html" afterPath="$PROJECT_DIR$/templates/template.html" />
     </list>
     <ignored path="cslweb.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -84,14 +78,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="group.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="group.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/group.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-280">
-              <caret line="66" column="5" selection-start-line="66" selection-start-column="5" selection-end-line="66" selection-end-column="5" />
+            <state relative-caret-position="434">
+              <caret line="108" column="37" selection-start-line="108" selection-start-column="37" selection-end-line="108" selection-end-column="37" />
               <folding>
                 <element signature="e#0#91#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="519">
+              <caret line="105" column="0" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -136,7 +140,6 @@
         <option value="$PROJECT_DIR$/templates/icons.html" />
         <option value="$PROJECT_DIR$/templates/register.html" />
         <option value="$PROJECT_DIR$/templates/login.html" />
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/migrations/initial.py" />
         <option value="$PROJECT_DIR$/app.py" />
         <option value="$PROJECT_DIR$/model.py" />
@@ -145,6 +148,7 @@
         <option value="$PROJECT_DIR$/templates/group.html" />
         <option value="$PROJECT_DIR$/templates/dashboard.html" />
         <option value="$PROJECT_DIR$/group.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -465,14 +469,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="14" selection-start-line="5" selection-start-column="14" selection-end-line="5" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/login.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="362">
@@ -545,11 +541,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/group.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-280">
-          <caret line="66" column="5" selection-start-line="66" selection-start-column="5" selection-end-line="66" selection-end-column="5" />
+        <state relative-caret-position="434">
+          <caret line="108" column="37" selection-start-line="108" selection-start-column="37" selection-end-line="108" selection-end-column="37" />
           <folding>
             <element signature="e#0#91#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="519">
+          <caret line="105" column="0" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
