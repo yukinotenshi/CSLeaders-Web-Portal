@@ -81,18 +81,11 @@ class MailQueue(BaseModel):
 
 class Schedule(BaseModel):
     byUser = pw.ForeignKeyField(User, related_name="set_schedules")
+    forGroup = pw.ForeignKeyField(Group, related_name="received_schedules")
     date = pw.DateTimeField(default=datetime.now)
 
     class Meta:
         db_table = "schedule"
-
-
-class HaveSchedule(BaseModel):
-    group = pw.ForeignKeyField(Group, "schedules")
-    schedule = pw.ForeignKeyField(Schedule, "participant")
-
-    class Meta:
-        db_table = "schedule_relation"
 
 
 def createGroup(name: str, admin: User) -> Group:
