@@ -79,35 +79,35 @@ class Schedule(BaseModel):
     class Meta:
         db_table = "schedule"
 
-def create_group(name: str, admin: User) -> Group:
+def createGroup(name: str, admin: User) -> Group:
     g = Group(name=name, admin=admin)
     g.save()
     InGroup(user=admin, group=g).save()
     return g
 
 
-def user_is_in_group(user: User, group: Group) -> bool:
+def userIsInGroup(user: User, group: Group) -> bool:
     q = InGroup.select() \
                .where((InGroup.user == user) & (InGroup.group == group))
     return q.count() == 1
 
 
-def user_is_invited_to_group(user: User, group: Group) -> bool:
+def userIsInvitedToGroup(user: User, group: Group) -> bool:
     q = Invitation.select() \
                .where((Invitation.user == user) & (Invitation.group == group))
     return q.count() == 1
 
 
-def invite_user_to_group(user: User, group: Group) -> Invitation:
-    assert not user_is_in_group(user, group)
-    assert not user_is_invited_to_group(user, group)
+def inviteUserToGroup(user: User, group: Group) -> Invitation:
+    assert not userIsInGroup(user, group)
+    assert not userIsInvitedToGroup(user, group)
     q = Invitation(user=user, group=group)
     q.save()
     return q
 
 
-def add_user_to_group(user: User, group: Group) -> InGroup:
-    assert not user_is_in_group(user, group)
+def addUserToGroup(user: User, group: Group) -> InGroup:
+    assert not userIsInGroup(user, group)
     # hapus invitation jika ada
     try:
         q = Invitation \
@@ -121,24 +121,24 @@ def add_user_to_group(user: User, group: Group) -> InGroup:
     return q
 
 
-def delete_group(group: Group):
+def deleteGroup(group: Group):
     InGroup.delete().where(InGroup.group == group)
     group.delete_instance()
 
 
-def list_user_groups(user: User):
+def listUserGroups(user: User):
     return [x.group for x in user.groups]
 
 
-def list_admin_groups(admin: User):
+def listAdminGroups(admin: User):
     return [x for x in admin.admin_of]
 
 
-def list_group_users(group: Group):
+def listGroupUsers(group: Group):
     return [x.user for x in group.users]
 
 
-def list_user_invitations_group(user: User):
+def listUserInvitationsGroup(user: User):
     return [x.group for x in user.invited_groups]
 
 

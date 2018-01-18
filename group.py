@@ -52,7 +52,7 @@ def accept(gid):
         group = model.Group.get(
             model.Group.id == gid
         )
-        model.add_user_to_group(user, group)
+        model.addUserToGroup(user, group)
 
         return render.dashboard(success="Successfully joined group")
     except:
@@ -65,7 +65,7 @@ def create():
     user = model.User.get(
         model.User.email == session['user']
     )
-    model.create_group(groupName, user)
+    model.createGroup(groupName, user)
 
     return render.group(success="Group has been created.")
 
@@ -104,7 +104,7 @@ def invite():
             model.Group.id == data['group']
         )
 
-        model.invite_user_to_group(user, group)
+        model.inviteUserToGroup(user, group)
 
         return render.group(success="You have invited %s" % user.nickName)
 

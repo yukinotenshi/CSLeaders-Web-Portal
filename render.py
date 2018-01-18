@@ -6,7 +6,7 @@ def dashboard(**kwargs):
         model.User.email == session['user']
     )
     mails = [x for x in user.sent_broadcasts] + [x.detail for x in user.received_emails]
-    groups = model.list_user_invitations_group(user)
+    groups = model.listUserInvitationsGroup(user)
     return render_template("dashboard.html",
                            user=user, mails=mails, groups=groups,
                            page="Dashboard", **kwargs)
@@ -17,9 +17,9 @@ def group(**kwargs):
         model.User.email == session['user']
     )
 
-    ownedGroups = model.list_admin_groups(user)
+    ownedGroups = model.listAdminGroups(user)
     return render_template("group.html",
                            users=users,
-                           groups=model.list_user_groups(user),
+                           groups=model.listUserGroups(user),
                            page="Group",
                            ownedGroups=ownedGroups, **kwargs)
