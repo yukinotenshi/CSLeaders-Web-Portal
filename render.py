@@ -22,4 +22,5 @@ def group(**kwargs):
                            users=users,
                            groups=model.listUserGroups(user),
                            page="Group",
-                           ownedGroups=ownedGroups, **kwargs)
+                           ownedGroups=ownedGroups, **kwargs,
+                           admin=user)

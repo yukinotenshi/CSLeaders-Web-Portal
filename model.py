@@ -140,11 +140,13 @@ def addUserToGroup(user: User, group: Group) -> InGroup:
 
 
 def removeUserFromGroup(user: User, group: Group):
-    InGroup.delete().where((InGroup.user == user) & (InGroup.group == group))
+    query = InGroup.delete().where((InGroup.user == user) & (InGroup.group == group))
+    query.execute()
 
 
 def deleteGroup(group: Group):
-    InGroup.delete().where(InGroup.group == group)
+    query = InGroup.delete().where(InGroup.group == group)
+    query.execute()
     group.delete_instance()
 
 

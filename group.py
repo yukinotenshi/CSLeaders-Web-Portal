@@ -58,17 +58,6 @@ def accept(gid):
     except:
         return render.dashboard(error="Fail joining group")
 
-@group.route("/create", methods=["POST"])
-@loggedIn(True)
-def create():
-    groupName = request.form['group']
-    user = model.User.get(
-        model.User.email == session['user']
-    )
-    model.createGroup(groupName, user)
-
-    return render.group(success="Group has been created.")
-
 
 @group.route("/decline/<gid>")
 @loggedIn(True)
@@ -90,6 +79,29 @@ def decline(gid):
         return render.dashboard(success="You have declined the invitation.")
     except:
         return render.dashboard(error="An error occured")
+
+
+@group.route("/create", methods=["POST"])
+@loggedIn(True)
+def create():
+    groupName = request.form['group']
+    user = model.User.get(
+        model.User.email == session['user']
+    )
+    model.createGroup(groupName, user)
+
+    return render.group(success="Group has been created.")
+
+
+@group.route("/delete/<gid>")
+@loggedIn(True)
+def delete(gid):
+    try:
+        group = model.Group.get(model.Group.id == gid)
+        model.deleteGroup(group)
+        return render.group(success="Group has been deleted")
+    except:
+        return render.group(error="Fail deleting group")
 
 
 @group.route("/invite", methods=["POST"])
