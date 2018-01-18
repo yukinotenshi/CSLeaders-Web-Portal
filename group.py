@@ -122,3 +122,20 @@ def invite():
 
     except:
         return render.group(error="Error inviting %s" % user.nickName)
+
+@group.route("/request", methods=["POST"])
+@loggedIn(True)
+def request():
+    try:
+        user = model.User.get(
+            model.User.email == session['user']
+        )
+        group = model.Group.get(
+            model.Group.id == request.form['group']
+        )
+        model.requestUserToGroup(user, group)
+
+        return render.group(success="You have requested to join")
+    except:
+        return  render.group(error="Fail requesting to join")
+
