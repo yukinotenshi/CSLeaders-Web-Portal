@@ -30,8 +30,8 @@ def sendMail():
     for item in queue:
         from_email = Email(item.detail.fromUser.email)
         to_email = Email(item.toUser.email)
-        subject = item.detail.body
-        content = Content("text/plain", item.detail.title)
+        subject = item.detail.title
+        content = Content("text/plain", item.detail.body)
         mail = Mail(from_email, subject, to_email, content)
         resp = sg.client.mail.send.post(request_body=mail.get())
         assert resp.status_code == 202
@@ -42,8 +42,8 @@ def sendMail():
     for item in privateQueue:
         from_email = Email(item.fromUser.email)
         to_email = Email(item.toUser.email)
-        subject = item.body
-        content = Content("text/plain", item.title)
+        subject = item.title
+        content = Content("text/plain", item.body)
         mail = Mail(from_email, subject, to_email, content)
         resp = sg.client.mail.send.post(request_body=mail.get())
         assert resp.status_code == 202
