@@ -1,5 +1,6 @@
 import peewee as pw
-from datetime import datetime
+from datetime import datetime, timedelta
+from notification import scheduleAdded, scheduleCanceled, groupInvite
 
 
 db = pw.SqliteDatabase('csl.db')
@@ -78,15 +79,40 @@ class MailQueue(BaseModel):
     class Meta:
         db_table = "mailqueue"
 
+class PrivateMailQueue(BaseModel):
+    fromUser = pw.ForeignKeyField(User, related_name="sent_privates")
+    toUser = pw.ForeignKeyField(User, related_name="received_privates")
+    body = pw.TextField()
+    title = pw.CharField()
+    sent = pw.BooleanField(default=False)
+    sentAt = pw.DateTimeField(default=datetime.now)
+
+    class Meta:
+        db_table = "private_mail_queue"
+
 
 class Schedule(BaseModel):
     byUser = pw.ForeignKeyField(User, related_name="set_schedules")
-    forGroup = pw.ForeignKeyField(Group, related_name="received_schedules")
+    title = pw.CharField()
+    description = pw.TextField()
     date = pw.DateTimeField(default=datetime.now)
 
     class Meta:
         db_table = "schedule"
 
+class HaveSchedule(BaseModel):
+    group = pw.ForeignKeyField(Group, related_name="schedules")
+    schedule = pw.ForeignKeyField(Schedule, related_name="groups")
+
+    class Meta:
+        db_table = "have_schedule"
+
+class Reminder(BaseModel):
+    schedule = pw.ForeignKeyField(Schedule, related_name="reminder")
+    date = pw.DateField(default=datetime.today())
+
+    class Meta:
+        db_table = "reminder"
 
 def createGroup(name: str, admin: User) -> Group:
     g = Group(name=name, admin=admin)
@@ -107,11 +133,18 @@ def userIsInvitedToGroup(user: User, group: Group) -> bool:
     return q.count() == 1
 
 
-def inviteUserToGroup(user: User, group: Group) -> Invitation:
+def inviteUserToGroup(user: User, group: Group, admin : User) -> Invitation:
     assert not userIsInGroup(user, group)
+    assert admin == group.admin
     assert not userIsInvitedToGroup(user, group)
     q = Invitation(user=user, group=group)
     q.save()
+    pm = PrivateMailQueue(fromUser=admin, toUser=user,
+                         title=groupInvite.title % (group.name),
+                         body = groupInvite.body % (admin.nickName,
+                                               group.name))
+    pm.save()
+
     return q
 
 
@@ -158,6 +191,16 @@ def requestUserToGroup(user: User, group: Group) -> JoinRequest:
     return q
 
 
+def acceptUserToGroup(r : JoinRequest, admin: User):
+    user = r.user
+    group = r.group
+    assert admin == r.group.admin
+    assert not userIsInGroup(user, group)
+    assert not userIsInvitedToGroup(user, group)
+    q = InGroup(user=user, group=group)
+    q.save()
+
+
 def listUserGroups(user: User):
     return [x.group for x in user.groups]
 
@@ -181,6 +224,57 @@ def broadcastMailToGroup(sender: User, group: Group, title, body):
         m = MailQueue(detail=b, toUser=user)
         m.save()
 
+
+def addSchedule(user: User, group : Group, title, description, date):
+    s = Schedule(byUser=user, title=title, description=description, date=date)
+    assert datetime.strptime(date, "%Y-%m-%d") >= datetime.today()
+    s.save()
+    hs = HaveSchedule(group = group, schedule=s)
+    hs.save()
+    r = Reminder(schedule=s,
+                 date=datetime.strptime(date, "%Y-%m-%d") - timedelta(days=1))
+    r.save()
+    broadcastMailToGroup(user, group,
+                         scheduleAdded.title % (title),
+                         scheduleAdded.body % (user.nickName,
+                                               title,
+                                               description,
+                                               date))
+
+
+def deleteSchedule(schedule: Schedule, user : User):
+    assert user == schedule.byUser
+    groups = [x.group for x in schedule.groups]
+    for group in groups:
+        broadcastMailToGroup(schedule.byUser, group,
+                             scheduleCanceled.title % (schedule.title),
+                             scheduleCanceled.body % (schedule.byUser.nickName,
+                                                   schedule.title,
+                                                   schedule.description,
+                                                   schedule.date))
+    schedule.delete_instance()
+    query = HaveSchedule.delete().where(
+        HaveSchedule.schedule == schedule
+    )
+    query.execute()
+    query = Reminder.delete().where(
+        Reminder.schedule == schedule
+    )
+    query.execute()
+
+
+def listUserSchedules(user: User):
+    groups = listUserGroups(user)
+    uniqueSchedules = []
+    for group in groups:
+        schedules = [x.schedule for x in group.schedules]
+        for s in schedules:
+            uniqueSchedules.append(s) if s not in uniqueSchedules else None
+
+    def getKey(s):
+        return s.date
+
+    return sorted(uniqueSchedules, key=getKey)
 
 if __name__ == '__main__':
     db.connect()
