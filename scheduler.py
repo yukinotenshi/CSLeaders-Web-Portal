@@ -1,7 +1,7 @@
 import model
 import sendgrid
 from sendgrid.helpers.mail import Mail, Content, Email
-
+from config import __sendgrid_api_key__
 
 class Config(object):
     JOBS = [
@@ -23,7 +23,7 @@ def sendMail():
                  .join(model.User) \
                  .order_by(model.MailQueue.sentAt.asc())
 
-    sg = sendgrid.SendGridAPIClient(apikey="SENDGRID_API_KEY")
+    sg = sendgrid.SendGridAPIClient(apikey=__sendgrid_api_key__)
 
     for item in queue:
         from_email = Email(item.detail.fromUser.email)
