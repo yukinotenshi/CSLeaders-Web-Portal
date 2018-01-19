@@ -17,6 +17,8 @@ class Config(object):
 
 
 def sendMail():
+    if model.db.is_closed():
+        model.db.connect()
     queue = model.MailQueue \
                  .select(model.MailQueue, model.Broadcast, model.User) \
                  .join(model.Broadcast) \
@@ -47,3 +49,6 @@ def sendMail():
         assert resp.status_code == 202
         item.sent = True
         item.save()
+
+    if not model.db.is_closed():
+        model.db.close()
