@@ -34,3 +34,16 @@ def sendMail():
         resp = sg.client.mail.send.post(request_body=mail.get())
         assert resp.status_code == 202
         item.delete_instance()
+
+    privateQueue = model.PrivateMailQueue.select().where(~model.PrivateMailQueue.sent)
+
+    for item in privateQueue:
+        from_email = Email(item.fromUser.email)
+        to_email = Email(item.toUser.email)
+        subject = item.body
+        content = Content("text/plain", item.title)
+        mail = Mail(from_email, subject, to_email, content)
+        resp = sg.client.mail.send.post(request_body=mail.get())
+        assert resp.status_code == 202
+        item.sent = True
+        item.save()

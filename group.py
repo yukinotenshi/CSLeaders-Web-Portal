@@ -1,28 +1,9 @@
 from flask import Blueprint, request, Response, render_template, url_for, session, redirect
 import model
 import render
+from util import loggedIn
 
 group = Blueprint('group', 'group', url_prefix='/group')
-
-def loggedIn(bool):
-    def decorator(func):
-        def wrap(*args, **kwargs):
-            if not bool:
-                stat = session.get('loggedIn') is None
-            else:
-                stat = session.get('loggedIn') is not None
-            if (stat):
-                return func(*args, **kwargs)
-            else:
-                if bool:
-                    return render_template("login.html")
-                else:
-                    return render.dashboard(success="Logged in.")
-
-        wrap.__name__ = func.__name__
-        return wrap
-    return decorator
-
 
 @group.before_request
 def _db_connect():
@@ -112,15 +93,19 @@ def invite():
         user = model.User.get(
             model.User.id == data['user']
         )
+        admin = model.User.get(
+            model.User.email == session['user']
+        )
         group = model.Group.get(
             model.Group.id == data['group']
         )
 
-        model.inviteUserToGroup(user, group)
+        model.inviteUserToGroup(user, group, admin)
 
         return render.group(success="You have invited %s" % user.nickName)
 
-    except:
+    except Exception as e:
+        print(e)
         return render.group(error="Error inviting %s" % user.nickName)
 
 @group.route("/request", methods=["POST"])

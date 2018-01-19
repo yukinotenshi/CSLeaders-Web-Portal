@@ -8,36 +8,19 @@ import model
 import render
 from group import group
 from mail import mail
+from util import loggedIn
+from schedule import schedule
 
 app = Flask(__name__)
 app.secret_key = "SOMETHING SHOULD BE SECRET"
 app.register_blueprint(group)
 app.register_blueprint(mail)
+app.register_blueprint(schedule)
 
 app.config.from_object(scheduler.Config())
 schedule = APScheduler()
 schedule.init_app(app)
 schedule.start()
-
-
-def loggedIn(bool):
-    def decorator(func):
-        def wrap(*args, **kwargs):
-            if not bool:
-                stat = session.get('loggedIn') is None
-            else:
-                stat = session.get('loggedIn') is not None
-            if (stat):
-                return func(*args, **kwargs)
-            else:
-                if bool:
-                    return render_template("login.html")
-                else:
-                    return render_template("dashboard.html")
-
-        wrap.__name__ = func.__name__
-        return wrap
-    return decorator
 
 
 @app.before_request

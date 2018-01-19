@@ -9,7 +9,9 @@ db.connect()
 db.create_tables([
     User, Group, InGroup,
     Invitation, Broadcast,
-    MailQueue, Schedule
+    MailQueue, Schedule,
+    HaveSchedule, Reminder,
+    PrivateMailQueue
 ])
 
 db.close()
